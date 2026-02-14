@@ -20,8 +20,8 @@ Usage:
     mw_result = cascade.middleware_check(ai_response)
     eval_result = cascade.evaluate(messages)
 
-    # Attestation
-    attestation = AttestationService(contract_id="...", network="testnet")
+    # Attestation (testnet for demo, mainnet for production)
+    attestation = AttestationService(contract_id="paice.near", network="mainnet")
     result = attestation.attest(session_id, score_payload)
     verified = attestation.verify(session_id)
 """

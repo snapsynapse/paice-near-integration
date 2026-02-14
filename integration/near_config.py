@@ -136,8 +136,10 @@ NEAR_CASCADE_EVAL_MODEL=zai-org/GLM-4.7
 NEAR_CASCADE_EVAL_FALLBACK=openai/gpt-oss-120b
 NEAR_CASCADE_EVAL_MAX_TOKENS=2000
 
-# Contract
-NEAR_CONTRACT_ID=your-contract.nearplay.testnet
+# Contract (testnet for demo, mainnet for production)
+# Testnet: NEAR_CONTRACT_ID=e756da-291226-1771097746.nearplay.testnet
+# Mainnet: NEAR_CONTRACT_ID=paice.near
+NEAR_CONTRACT_ID=e756da-291226-1771097746.nearplay.testnet
 NEAR_NETWORK=testnet
 NEAR_PREFER_TEE=true
 """

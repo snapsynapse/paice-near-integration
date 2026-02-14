@@ -32,7 +32,7 @@ All four models are TEE-protected ("Private" classification on NEAR AI Cloud). I
 1. Chat with AI via TEE-protected inference
 2. Generate assessment scores
 3. Hash the score payload (SHA-256)
-4. Write attestation to NEAR testnet
+4. Write attestation to NEAR (testnet by default, switchable to mainnet)
 5. Verify the attestation on-chain
 
 **Cascade demo** — Open `demo/cascade.html` for the three-layer architecture:
@@ -41,8 +41,10 @@ All four models are TEE-protected ("Private" classification on NEAR AI Cloud). I
 2. Middleware QA check (Qwen3 30B)
 3. Generate assessment scores (GLM 4.7)
 4. Hash score payload (SHA-256)
-5. Write attestation to NEAR testnet
+5. Write attestation to NEAR (testnet by default, switchable to mainnet)
 6. Verify on-chain
+
+Both demos default to the testnet contract for evaluation. Switch the network dropdown to "Mainnet" and enter `paice.near` to use the production contract.
 
 ### Test the API
 
@@ -60,10 +62,14 @@ python integration/examples/test_attestation.py
 ```python
 from integration.near_service import AttestationService
 
+# Testnet (demo)
 service = AttestationService(
     contract_id="e756da-291226-1771097746.nearplay.testnet",
     network="testnet"
 )
+
+# Mainnet (production)
+# service = AttestationService(contract_id="paice.near", network="mainnet")
 
 # Verify a session
 result = service.verify("test-session-001")
@@ -93,7 +99,9 @@ paice-near-integration/
     architecture.md              # Integration architecture & cascade design
 ```
 
-## Deployed Contract
+## Deployed Contracts
+
+### Testnet (Hackathon Demo)
 
 | Field | Value |
 |-------|-------|
@@ -102,6 +110,17 @@ paice-near-integration/
 | Explorer | [View on NearBlocks](https://testnet.nearblocks.io/address/e756da-291226-1771097746.nearplay.testnet) |
 | Methods | `attest()`, `verify()`, `get_attestation_count()` |
 | Deployed via | [nearplay.app](https://nearplay.app) |
+
+### Mainnet (Production)
+
+| Field | Value |
+|-------|-------|
+| Address | `paice.near` |
+| Network | NEAR Mainnet |
+| Explorer | [View on NearBlocks](https://nearblocks.io/address/paice.near) |
+| Methods | `attest()`, `verify()`, `get_attestation_count()` |
+
+The mainnet contract at `paice.near` is deployed for production use within the PAICE platform. The testnet contract is used for the interactive demos in this repository.
 
 ## NEAR AI Cloud Models Used
 
@@ -198,8 +217,12 @@ NEAR_CASCADE_EVAL_MODEL=zai-org/GLM-4.7
 NEAR_CASCADE_EVAL_FALLBACK=openai/gpt-oss-120b
 
 # Assessment Attestation Contract
+# Testnet (demo):
 NEAR_CONTRACT_ID=e756da-291226-1771097746.nearplay.testnet
 NEAR_NETWORK=testnet
+# Mainnet (production):
+# NEAR_CONTRACT_ID=paice.near
+# NEAR_NETWORK=mainnet
 NEAR_PREFER_TEE=true
 ```
 
@@ -208,7 +231,7 @@ NEAR_PREFER_TEE=true
 This integration can only work with NEAR's unique combination of:
 - **NEAR AI Cloud**: TEE-protected inference with hardware attestation — 4 text models running in secure enclaves
 - **NEAR Blockchain**: On-chain state for immutable attestations
-- **Account Model**: Named accounts for human-readable contract addresses
+- **Account Model**: Named accounts like `paice.near` instead of hex strings
 - **Low Fees**: Testnet deployments are free; mainnet attestations cost fractions of a cent
 
 ## License

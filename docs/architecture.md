@@ -31,7 +31,7 @@ User Browser                    PAICE Backend                    NEAR Ecosystem
                           |  | (5 dimensions) |  |      |  +-------------------+  |
                           |  +-------+--------+  |      |                         |
                           |          |           |      |  NEAR Blockchain        |
-                          |  +-------v--------+  |      |  (testnet)              |
+                          |  +-------v--------+  |      |  (testnet / mainnet)    |
                           |  | NEAR Service   |-------->|  +-------------------+  |
                           |  | - hash payload |  |      |  | Attestation       |  |
                           |  | - attest()     |  |      |  | Contract          |  |
@@ -252,9 +252,19 @@ Scoring prompts include calibration anchors from PAICE production:
 | No PII in storage | PAICE architecture | Yes (audit the codebase) |
 | Cascade models identified | Attestation payload | Yes (on-chain record) |
 
-## Deployed Contract
+## Deployed Contracts
 
+### Testnet (Hackathon Demo)
 - **Address:** `e756da-291226-1771097746.nearplay.testnet`
 - **Network:** NEAR Testnet
 - **Explorer:** https://testnet.nearblocks.io/address/e756da-291226-1771097746.nearplay.testnet
 - **Deployed via:** [nearplay.app](https://nearplay.app)
+
+### Mainnet (Production)
+- **Address:** `paice.near`
+- **Network:** NEAR Mainnet
+- **Explorer:** https://nearblocks.io/address/paice.near
+
+The testnet contract is used for the interactive demos in this repository. The
+mainnet contract at `paice.near` is deployed for production use within the PAICE
+platform at [paice.work](https://paice.work).
