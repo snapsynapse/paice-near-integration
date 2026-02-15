@@ -194,15 +194,17 @@ Scores are stored on a 0-100 scale internally and displayed on a 0-1000 scale:
 
 ## Cost Per Assessment
 
-A complete assessment through the full cascade costs under half a cent:
+A standard 25-minute PAICE assessment involves 12-15 conversational turns with accumulating context, followed by a single evaluation pass over the full transcript. Total cost: roughly two cents.
 
-| Component | Typical Cost |
-|-----------|:---:|
-| Chat layer (GPT OSS 120B, ~500 tokens) | ~$0.0003 |
-| Middleware QA (Qwen3 30B, ~200 tokens) | ~$0.0001 |
-| Evaluation (GLM 4.7, ~2000 tokens) | ~$0.0035 |
-| On-chain attestation (NEAR tx fee) | ~$0.0001 |
-| **Total** | **~$0.004** |
+| Component | Tokens (in / out) | Cost |
+|-----------|:---:|:---:|
+| Chat layer (GPT OSS 120B, ~12 turns) | ~25K / ~3K | ~$0.0054 |
+| Middleware QA (Qwen3 30B, ~12 calls) | ~7K / ~1K | ~$0.0016 |
+| Evaluation (GLM 4.7, 1 call) | ~6.5K / ~2K | ~$0.0121 |
+| On-chain attestation (NEAR tx fee) | — | ~$0.0001 |
+| **Total** | | **~$0.02** |
+
+The evaluation layer dominates cost (~60%) because GLM 4.7 uses extensive internal reasoning before scoring. Chat and middleware are cheap because GPT OSS 120B and Qwen3 30B are the lowest-priced TEE models on NEAR AI Cloud.
 
 ## How Verification Works
 
@@ -245,7 +247,7 @@ No other blockchain ecosystem provides all four capabilities needed for this int
 - **NEAR AI Cloud + TEE Enclaves**: The entire model cascade (4 models) runs inside hardware-secured TEEs. Conversation data is inaccessible to NEAR, the cloud provider, or PAICE during processing. This is the core privacy guarantee.
 - **On-Chain State**: Immutable attestation storage via a Rust smart contract. Anyone can verify score integrity by comparing hashes.
 - **Named Accounts**: Human-readable addresses like `paice.near` instead of hex strings — meaningful for a production platform where trust matters.
-- **Near-Zero Fees**: A complete assessment (three AI model calls + on-chain attestation) costs under $0.005. Mainnet attestation transactions cost fractions of a cent.
+- **Near-Zero Fees**: A full 25-minute assessment (three model layers across ~12 turns + on-chain attestation) costs ~$0.02. Mainnet attestation transactions cost fractions of a cent.
 - **OpenAI-Compatible API**: NEAR AI Cloud uses the standard `/v1/chat/completions` format, enabling integration with minimal code changes to existing LLM abstraction layers.
 
 ## License
