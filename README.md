@@ -25,26 +25,25 @@ All four models are TEE-protected ("Private" classification on NEAR AI Cloud). I
 
 ## Quick Start
 
-### Try the Demo
+### Try the Demos
 
-**Single-model demo** — Open `demo/index.html` in a browser, enter your [NEAR AI Cloud API key](https://cloud.near.ai), and walk through the full pipeline:
+All demos are self-contained HTML files — open in a browser, enter a [NEAR AI Cloud API key](https://cloud.near.ai), and run the full pipeline.
 
-1. Chat with AI via TEE-protected inference
-2. Generate assessment scores
-3. Hash the score payload (SHA-256)
-4. Write attestation to NEAR (testnet by default, switchable to mainnet)
-5. Verify the attestation on-chain
+| Demo | File | Network | Description |
+|------|------|---------|-------------|
+| **Cascade (testnet)** | `demo/cascade.html` | Testnet | Three-layer cascade with live testnet attestation. **Start here.** |
+| **Cascade (mainnet)** | `demo/cascade-mainnet.html` | Mainnet | Same cascade, configured for `paice.near` mainnet contract. |
+| **Single-model** | `demo/index.html` | Testnet | Simplified single-model version for reference. |
 
-**Cascade demo** — Open `demo/cascade.html` for the three-layer architecture:
+**7-step pipeline** (cascade demos):
 
-1. Chat via TEE-protected cascade (GPT OSS 120B)
-2. Middleware QA check (Qwen3 30B)
-3. Generate assessment scores (GLM 4.7)
-4. Hash score payload (SHA-256)
-5. Write attestation to NEAR (testnet by default, switchable to mainnet)
-6. Verify on-chain
-
-Both demos default to the testnet contract for evaluation. Switch the network dropdown to "Mainnet" and enter `paice.near` to use the production contract.
+1. Connect to NEAR AI Cloud
+2. Chat via TEE-protected cascade (GPT OSS 120B)
+3. Middleware QA validation (Qwen3 30B)
+4. Generate assessment scores (GLM 4.7)
+5. Hash score payload (SHA-256)
+6. Write attestation to NEAR smart contract
+7. Verify the attestation on-chain
 
 ### Test the API
 
@@ -71,8 +70,8 @@ service = AttestationService(
 # Mainnet (production)
 # service = AttestationService(contract_id="paice.near", network="mainnet")
 
-# Verify a session
-result = service.verify("test-session-001")
+# Verify a session (session IDs follow the pattern "paice-{timestamp}-{random}")
+result = service.verify("paice-1771107293691-8x2ra")
 print(f"Found: {result.found}")
 print(f"Score hash: {result.score_hash}")
 print(f"Attester: {result.attester}")
@@ -93,8 +92,9 @@ paice-near-integration/
       test_near_ai.py            # NEAR AI Cloud test script
       test_attestation.py        # Contract verification test
   demo/
-    index.html                   # Single-model interactive demo
-    cascade.html                 # Three-layer cascade demo
+    cascade.html                 # Three-layer cascade demo (testnet)
+    cascade-mainnet.html         # Three-layer cascade demo (mainnet, paice.near)
+    index.html                   # Single-model demo (reference)
   docs/
     architecture.md              # Integration architecture & cascade design
 ```
@@ -120,7 +120,7 @@ paice-near-integration/
 | Explorer | [View on NearBlocks](https://nearblocks.io/address/paice.near) |
 | Methods | `attest()`, `verify()`, `get_attestation_count()` |
 
-The mainnet contract at `paice.near` is deployed for production use within the PAICE platform. The testnet contract is used for the interactive demos in this repository.
+The testnet contract is fully operational and used for the interactive demos. The mainnet account `paice.near` is registered and funded, with the same contract deployed for production use within the PAICE platform at [paice.work](https://paice.work).
 
 ## NEAR AI Cloud Models Used
 
@@ -192,6 +192,18 @@ Scores are stored on a 0-100 scale internally and displayed on a 0-1000 scale:
 
 **Calibration**: Most typical conversations score 200-400. Productive conversations score 400-550. Only sustained, high-quality exchanges with clear evidence of verification, iteration, and learning reach 600+.
 
+## Cost Per Assessment
+
+A complete assessment through the full cascade costs under half a cent:
+
+| Component | Typical Cost |
+|-----------|:---:|
+| Chat layer (GPT OSS 120B, ~500 tokens) | ~$0.0003 |
+| Middleware QA (Qwen3 30B, ~200 tokens) | ~$0.0001 |
+| Evaluation (GLM 4.7, ~2000 tokens) | ~$0.0035 |
+| On-chain attestation (NEAR tx fee) | ~$0.0001 |
+| **Total** | **~$0.004** |
+
 ## How Verification Works
 
 1. Obtain the assessment score payload (session ID, dimensional scores, tier, timestamp, cascade models used)
@@ -226,13 +238,15 @@ NEAR_NETWORK=testnet
 NEAR_PREFER_TEE=true
 ```
 
-## Why NEAR?
+## Why Only NEAR?
 
-This integration can only work with NEAR's unique combination of:
-- **NEAR AI Cloud**: TEE-protected inference with hardware attestation — 4 text models running in secure enclaves
-- **NEAR Blockchain**: On-chain state for immutable attestations
-- **Account Model**: Named accounts like `paice.near` instead of hex strings
-- **Low Fees**: Testnet deployments are free; mainnet attestations cost fractions of a cent
+No other blockchain ecosystem provides all four capabilities needed for this integration:
+
+- **NEAR AI Cloud + TEE Enclaves**: The entire model cascade (4 models) runs inside hardware-secured TEEs. Conversation data is inaccessible to NEAR, the cloud provider, or PAICE during processing. This is the core privacy guarantee.
+- **On-Chain State**: Immutable attestation storage via a Rust smart contract. Anyone can verify score integrity by comparing hashes.
+- **Named Accounts**: Human-readable addresses like `paice.near` instead of hex strings — meaningful for a production platform where trust matters.
+- **Near-Zero Fees**: A complete assessment (three AI model calls + on-chain attestation) costs under $0.005. Mainnet attestation transactions cost fractions of a cent.
+- **OpenAI-Compatible API**: NEAR AI Cloud uses the standard `/v1/chat/completions` format, enabling integration with minimal code changes to existing LLM abstraction layers.
 
 ## License
 

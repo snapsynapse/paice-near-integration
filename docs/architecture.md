@@ -265,6 +265,6 @@ Scoring prompts include calibration anchors from PAICE production:
 - **Network:** NEAR Mainnet
 - **Explorer:** https://nearblocks.io/address/paice.near
 
-The testnet contract is used for the interactive demos in this repository. The
-mainnet contract at `paice.near` is deployed for production use within the PAICE
-platform at [paice.work](https://paice.work).
+The testnet contract is fully operational and used by `demo/cascade.html` and `demo/index.html`.
+The mainnet account `paice.near` is registered and funded, with the same contract deployed for
+production use. `demo/cascade-mainnet.html` is pre-configured for mainnet.

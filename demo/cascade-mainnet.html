@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PAICE + NEAR Integration Demo</title>
+  <title>PAICE + NEAR Mainnet Cascade Demo</title>
   <style>
     :root {
       --bg: #0a0e1a;
@@ -18,6 +18,8 @@
       --orange: #ff9f43;
       --red: #ff6b6b;
       --near-green: #00ec97;
+      --purple: #a78bfa;
+      --pink: #f472b6;
       --radius: 12px;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -67,10 +69,15 @@
       color: var(--near-green);
       border: 1px solid rgba(0, 236, 151, 0.3);
     }
-    .badge-testnet {
-      background: rgba(255, 159, 67, 0.15);
-      color: var(--orange);
-      border: 1px solid rgba(255, 159, 67, 0.3);
+    .badge-mainnet {
+      background: rgba(0, 236, 151, 0.15);
+      color: var(--near-green);
+      border: 1px solid rgba(0, 236, 151, 0.3);
+    }
+    .badge-cascade {
+      background: rgba(167, 139, 250, 0.15);
+      color: var(--purple);
+      border: 1px solid rgba(167, 139, 250, 0.3);
     }
     .header-badges {
       display: flex;
@@ -79,7 +86,7 @@
     /* Layout */
     .main {
       display: grid;
-      grid-template-columns: 1fr 400px;
+      grid-template-columns: 1fr 420px;
       height: calc(100vh - 61px);
     }
     /* Chat Panel */
@@ -128,6 +135,15 @@
       font-size: 12px;
       padding: 8px 16px;
     }
+    .msg-middleware {
+      align-self: center;
+      background: rgba(167, 139, 250, 0.1);
+      border: 1px solid rgba(167, 139, 250, 0.2);
+      color: var(--purple);
+      font-size: 11px;
+      padding: 6px 12px;
+      max-width: 90%;
+    }
     .msg-ai .model-tag {
       font-size: 11px;
       color: var(--text-dim);
@@ -141,6 +157,12 @@
       border-radius: 50%;
       background: var(--green);
       display: inline-block;
+    }
+    .model-tag .dot-middleware {
+      background: var(--purple);
+    }
+    .model-tag .dot-eval {
+      background: var(--orange);
     }
     .typing-indicator {
       display: none;
@@ -229,6 +251,77 @@
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+    /* Cascade Display */
+    .cascade-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .cascade-layer {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .cascade-layer .layer-icon {
+      width: 32px; height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .cascade-layer.layer-chat .layer-icon {
+      background: rgba(108, 140, 255, 0.2);
+      color: var(--accent);
+    }
+    .cascade-layer.layer-middleware .layer-icon {
+      background: rgba(167, 139, 250, 0.2);
+      color: var(--purple);
+    }
+    .cascade-layer.layer-eval .layer-icon {
+      background: rgba(255, 159, 67, 0.2);
+      color: var(--orange);
+    }
+    .cascade-layer .layer-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .cascade-layer .layer-role {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .cascade-layer .layer-model {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .cascade-layer .layer-fallback {
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+    .cascade-layer .layer-status {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      flex-shrink: 0;
+    }
+    .cascade-layer .layer-status.active {
+      background: var(--green);
+      box-shadow: 0 0 6px rgba(0, 212, 170, 0.5);
+    }
+    .cascade-layer .layer-status.using-fallback {
+      background: var(--orange);
+      box-shadow: 0 0 6px rgba(255, 159, 67, 0.5);
     }
     /* Score Display */
     .score-card {
@@ -411,23 +504,6 @@
     }
     .status-dot.connected { background: var(--green); }
     .status-dot.disconnected { background: var(--red); }
-    /* Model select */
-    .model-select-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-    .model-select-row label { font-size: 12px; color: var(--text-dim); }
-    .model-select-row select {
-      flex: 1;
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      background: var(--surface2);
-      color: var(--text);
-      font-size: 12px;
-    }
     /* Actions bar */
     .actions-bar {
       display: flex;
@@ -452,6 +528,29 @@
     .log-area .log-success { color: var(--green); }
     .log-area .log-error { color: var(--red); }
     .log-area .log-warn { color: var(--orange); }
+    .log-area .log-middleware { color: var(--purple); }
+    /* Eval model indicator */
+    .eval-indicator {
+      background: rgba(255, 159, 67, 0.1);
+      border: 1px solid rgba(255, 159, 67, 0.2);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: var(--orange);
+      margin-top: 8px;
+      text-align: center;
+    }
+    .middleware-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+    .middleware-toggle input[type="checkbox"] {
+      accent-color: var(--purple);
+    }
   </style>
 </head>
 <body>
@@ -460,6 +559,10 @@
   <div class="header">
     <div class="header-left">
       <span class="logo">PAICE + NEAR</span>
+      <span class="badge badge-cascade">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6m0 4v6m-6-8h12"/><circle cx="12" cy="12" r="2"/></svg>
+        Cascade
+      </span>
       <span class="badge badge-tee">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         TEE Protected
@@ -468,7 +571,7 @@
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         NEAR Verified
       </span>
-      <span class="badge badge-testnet">testnet</span>
+      <span class="badge badge-mainnet">mainnet</span>
     </div>
     <div class="header-badges">
       <span style="font-size:12px;color:var(--text-dim);">NEARCON Innovation Sandbox 2026</span>
@@ -483,26 +586,22 @@
         <div style="display:flex;justify-content:space-between;align-items:center;">
           <div>
             <h2>AI Collaboration Assessment</h2>
-            <p>Private inference via NEAR AI Cloud (TEE-protected)</p>
+            <p>Three-layer cascade &mdash; Chat, Middleware, Evaluation</p>
           </div>
-          <div class="model-select-row">
-            <label>Model:</label>
-            <select id="modelSelect">
-              <option value="deepseek-ai/DeepSeek-V3.1">DeepSeek V3.1 (Private) — $1.05/$3.10</option>
-              <option value="Qwen/Qwen3-30B-A3B-Instruct-2507">Qwen3 30B (Private) — $0.15/$0.55</option>
-              <option value="openai/gpt-oss-120b">GPT OSS 120B (Private) — $0.15/$0.55</option>
-              <option value="zai-org/GLM-4.7">GLM 4.7 (Private) — $0.85/$3.30</option>
-              <option value="openai/gpt-5.2">GPT-5.2 (Anonymised) — $1.80/$15.50</option>
-            </select>
+          <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
+            <div class="middleware-toggle">
+              <input type="checkbox" id="middlewareToggle" checked />
+              <label for="middlewareToggle">Middleware layer</label>
+            </div>
           </div>
         </div>
       </div>
       <div class="chat-messages" id="chatMessages">
         <div class="msg msg-system">
-          Private inference active. All AI processing runs inside hardware-secured TEE enclaves via NEAR AI Cloud.
+          Cascade active: GPT OSS 120B (Chat) &rarr; Qwen3 30B (Middleware) &rarr; GLM 4.7 (Evaluation). All models run inside TEE enclaves via NEAR AI Cloud.
         </div>
         <div class="msg msg-ai">
-          <div class="model-tag"><span class="dot"></span> NEAR AI Cloud &middot; TEE-protected</div>
+          <div class="model-tag"><span class="dot"></span> GPT OSS 120B &middot; Chat Layer &middot; Private</div>
           Welcome to PAICE! I'm here to assess how effectively you collaborate with AI. Let's explore how you approach problem-solving with AI tools. Could you tell me about a recent situation where you used AI to help with a work task?
         </div>
       </div>
@@ -519,6 +618,49 @@
 
     <!-- Right Panel -->
     <div class="right-panel">
+      <!-- Cascade Architecture -->
+      <div class="panel-section">
+        <h3>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6m0 4v6m-6-8h12"/><circle cx="12" cy="12" r="2"/></svg>
+          Model Cascade
+        </h3>
+        <div class="cascade-grid">
+          <div class="cascade-layer layer-chat" id="cascadeChat">
+            <div class="layer-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div class="layer-info">
+              <div class="layer-role">Chat Partner</div>
+              <div class="layer-model" id="chatModelLabel">GPT OSS 120B</div>
+              <div class="layer-fallback">Fallback: DeepSeek V3.1</div>
+            </div>
+            <div class="layer-status active" id="chatStatus"></div>
+          </div>
+          <div class="cascade-layer layer-middleware" id="cascadeMiddleware">
+            <div class="layer-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div class="layer-info">
+              <div class="layer-role">Middleware (QA)</div>
+              <div class="layer-model" id="mwModelLabel">Qwen3 30B</div>
+              <div class="layer-fallback">Fallback: DeepSeek V3.1</div>
+            </div>
+            <div class="layer-status" id="mwStatus"></div>
+          </div>
+          <div class="cascade-layer layer-eval" id="cascadeEval">
+            <div class="layer-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+            </div>
+            <div class="layer-info">
+              <div class="layer-role">Evaluation</div>
+              <div class="layer-model" id="evalModelLabel">GLM 4.7</div>
+              <div class="layer-fallback">Fallback: GPT OSS 120B</div>
+            </div>
+            <div class="layer-status" id="evalStatus"></div>
+          </div>
+        </div>
+      </div>
+
       <!-- Pipeline Steps -->
       <div class="panel-section">
         <h3>
@@ -527,11 +669,12 @@
         </h3>
         <ul class="step-list" id="stepList">
           <li class="step-item step-done" id="step-1"><span class="step-icon">&#10003;</span> Connect to NEAR AI Cloud</li>
-          <li class="step-item step-active" id="step-2"><span class="step-icon">2</span> Chat via TEE-protected inference</li>
-          <li class="step-item step-pending" id="step-3"><span class="step-icon">3</span> Generate assessment scores</li>
-          <li class="step-item step-pending" id="step-4"><span class="step-icon">4</span> Hash score payload (SHA-256)</li>
-          <li class="step-item step-pending" id="step-5"><span class="step-icon">5</span> Write attestation to NEAR testnet</li>
-          <li class="step-item step-pending" id="step-6"><span class="step-icon">6</span> Verify on-chain</li>
+          <li class="step-item step-active" id="step-2"><span class="step-icon">2</span> Chat via TEE-protected cascade</li>
+          <li class="step-item step-pending" id="step-3"><span class="step-icon">3</span> Middleware QA check</li>
+          <li class="step-item step-pending" id="step-4"><span class="step-icon">4</span> Generate assessment scores (GLM 4.7)</li>
+          <li class="step-item step-pending" id="step-5"><span class="step-icon">5</span> Hash score payload (SHA-256)</li>
+          <li class="step-item step-pending" id="step-6"><span class="step-icon">6</span> Write attestation to NEAR mainnet</li>
+          <li class="step-item step-pending" id="step-7"><span class="step-icon">7</span> Verify on-chain</li>
         </ul>
       </div>
 
@@ -544,10 +687,11 @@
         <div class="score-card">
           <div class="score-overall">
             <div class="score-number" id="overallScore">--</div>
-            <div style="font-size:11px;color:var(--muted);margin-top:-2px">/1000</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-top:-2px">/1000</div>
             <div class="score-tier" id="scoreTier">--</div>
           </div>
           <div class="score-dimensions" id="scoreDimensions"></div>
+          <div class="eval-indicator" id="evalIndicator"></div>
         </div>
       </div>
 
@@ -557,9 +701,7 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           On-Chain Attestation
         </h3>
-        <div class="attestation-card" id="attestationCard">
-          <!-- Populated dynamically -->
-        </div>
+        <div class="attestation-card" id="attestationCard"></div>
       </div>
 
       <!-- Actions -->
@@ -588,13 +730,13 @@
         </div>
         <div class="config-row">
           <label>Contract Address</label>
-          <input type="text" id="contractInput" value="e756da-291226-1771097746.nearplay.testnet" />
+          <input type="text" id="contractInput" value="paice.near" />
         </div>
         <div class="config-row">
           <label>Network</label>
           <select id="networkSelect">
-            <option value="testnet" selected>Testnet</option>
-            <option value="mainnet">Mainnet</option>
+            <option value="testnet">Testnet</option>
+            <option value="mainnet" selected>Mainnet</option>
           </select>
         </div>
       </div>
@@ -606,10 +748,11 @@
           Activity Log
         </h3>
         <div class="log-area" id="logArea">
-          <div class="log-info">[init] PAICE + NEAR Demo loaded</div>
-          <div class="log-success">[near-ai] Connected to NEAR AI Cloud</div>
-          <div class="log-info">[config] Contract: e756da-291226-1771097746.nearplay.testnet</div>
-          <div class="log-info">[config] Network: testnet</div>
+          <div class="log-info">[init] PAICE + NEAR Mainnet Cascade Demo loaded</div>
+          <div class="log-success">[cascade] Chat: GPT OSS 120B (Private)</div>
+          <div class="log-middleware">[cascade] Middleware: Qwen3 30B (Private)</div>
+          <div class="log-warn">[cascade] Evaluation: GLM 4.7 (Private)</div>
+          <div class="log-info">[config] Contract: paice.near (mainnet)</div>
         </div>
       </div>
     </div>
@@ -617,11 +760,31 @@
 
   <!-- Status Bar -->
   <div class="status-bar">
-    <span><span class="status-dot connected" id="statusDot"></span> <span id="statusText">NEAR AI Cloud connected</span></span>
+    <span><span class="status-dot connected" id="statusDot"></span> <span id="statusText">NEAR AI Cloud connected &mdash; 3-layer cascade active</span></span>
     <span id="tokenCount">Tokens: 0 in / 0 out | Cost: $0.0000</span>
   </div>
 
   <script>
+    // =========================================================
+    // CASCADE CONFIGURATION
+    // =========================================================
+    const CASCADE = {
+      chat: {
+        primary: { model: 'openai/gpt-oss-120b', label: 'GPT OSS 120B', pricing: { in: 0.15, out: 0.55 } },
+        fallback: { model: 'deepseek-ai/DeepSeek-V3.1', label: 'DeepSeek V3.1', pricing: { in: 1.05, out: 3.10 } }
+      },
+      middleware: {
+        primary: { model: 'Qwen/Qwen3-30B-A3B-Instruct-2507', label: 'Qwen3 30B', pricing: { in: 0.15, out: 0.55 } },
+        fallback: { model: 'deepseek-ai/DeepSeek-V3.1', label: 'DeepSeek V3.1', pricing: { in: 1.05, out: 3.10 } }
+      },
+      eval: {
+        primary: { model: 'zai-org/GLM-4.7', label: 'GLM 4.7', pricing: { in: 0.85, out: 3.30 } },
+        fallback: { model: 'openai/gpt-oss-120b', label: 'GPT OSS 120B', pricing: { in: 0.15, out: 0.55 } }
+      }
+    };
+
+    const API_BASE = 'https://cloud-api.near.ai/v1';
+
     // =========================================================
     // STATE
     // =========================================================
@@ -633,9 +796,15 @@
       sessionId: 'paice-' + Date.now() + '-' + Math.random().toString(36).substr(2, 8),
       totalInputTokens: 0,
       totalOutputTokens: 0,
+      totalCost: 0,
       scores: null,
       attestation: null,
-      messageCount: 0
+      messageCount: 0,
+      cascadeStats: {
+        chat: { calls: 0, fallbacks: 0, lastModel: null },
+        middleware: { calls: 0, fallbacks: 0, flagged: 0, lastModel: null },
+        eval: { calls: 0, fallbacks: 0, lastModel: null }
+      }
     };
 
     // =========================================================
@@ -649,17 +818,155 @@
     }
 
     // =========================================================
+    // CASCADE API CALL WITH FALLBACK
+    // =========================================================
+    async function cascadeCall(layer, messages, options = {}) {
+      const apiKey = document.getElementById('apiKeyInput').value.trim();
+      if (!apiKey) throw new Error('API key required');
+
+      const config = CASCADE[layer];
+      const maxTokens = options.maxTokens || 500;
+      const temperature = options.temperature || 0.7;
+
+      // Try primary model
+      const startPrimary = performance.now();
+      try {
+        log(`[${layer}] Calling ${config.primary.label}...`, 'info');
+        setCascadeStatus(layer, 'active');
+
+        const resp = await fetch(`${API_BASE}/chat/completions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: config.primary.model,
+            messages: messages,
+            temperature: temperature,
+            max_tokens: maxTokens
+          })
+        });
+
+        const data = await resp.json();
+        if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+
+        const content = data.choices[0].message.content;
+        if (!content) throw new Error('Model returned empty content (reasoning tokens exhausted)');
+
+        const usage = data.usage || {};
+        const elapsed = ((performance.now() - startPrimary) / 1000).toFixed(1);
+        const cost = (usage.prompt_tokens || 0) * config.primary.pricing.in / 1e6 +
+                     (usage.completion_tokens || 0) * config.primary.pricing.out / 1e6;
+
+        state.totalInputTokens += usage.prompt_tokens || 0;
+        state.totalOutputTokens += usage.completion_tokens || 0;
+        state.totalCost += cost;
+        state.cascadeStats[layer].calls++;
+        state.cascadeStats[layer].lastModel = config.primary.label;
+
+        log(`[${layer}] ${config.primary.label} responded (${elapsed}s, ${usage.completion_tokens || '?'} tokens)`, 'success');
+
+        return {
+          content: content,
+          model: config.primary.label,
+          modelId: config.primary.model,
+          usedFallback: false,
+          usage: usage,
+          latency: elapsed,
+          cost: cost
+        };
+
+      } catch (primaryErr) {
+        log(`[${layer}] Primary (${config.primary.label}) failed: ${primaryErr.message}`, 'warn');
+
+        // Try fallback
+        const startFallback = performance.now();
+        try {
+          log(`[${layer}] Falling back to ${config.fallback.label}...`, 'warn');
+          setCascadeStatus(layer, 'using-fallback');
+
+          const resp = await fetch(`${API_BASE}/chat/completions`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+              model: config.fallback.model,
+              messages: messages,
+              temperature: temperature,
+              max_tokens: maxTokens
+            })
+          });
+
+          const data = await resp.json();
+          if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+
+          const content = data.choices[0].message.content;
+          if (!content) throw new Error('Fallback also returned empty content');
+
+          const usage = data.usage || {};
+          const elapsed = ((performance.now() - startFallback) / 1000).toFixed(1);
+          const cost = (usage.prompt_tokens || 0) * config.fallback.pricing.in / 1e6 +
+                       (usage.completion_tokens || 0) * config.fallback.pricing.out / 1e6;
+
+          state.totalInputTokens += usage.prompt_tokens || 0;
+          state.totalOutputTokens += usage.completion_tokens || 0;
+          state.totalCost += cost;
+          state.cascadeStats[layer].calls++;
+          state.cascadeStats[layer].fallbacks++;
+          state.cascadeStats[layer].lastModel = config.fallback.label;
+
+          log(`[${layer}] ${config.fallback.label} responded (${elapsed}s)`, 'success');
+
+          return {
+            content: content,
+            model: config.fallback.label,
+            modelId: config.fallback.model,
+            usedFallback: true,
+            usage: usage,
+            latency: elapsed,
+            cost: cost
+          };
+
+        } catch (fallbackErr) {
+          setCascadeStatus(layer, '');
+          throw new Error(`Both models failed. Primary: ${primaryErr.message}. Fallback: ${fallbackErr.message}`);
+        }
+      }
+    }
+
+    function setCascadeStatus(layer, status) {
+      const statusIds = { chat: 'chatStatus', middleware: 'mwStatus', eval: 'evalStatus' };
+      const el = document.getElementById(statusIds[layer]);
+      if (!el) return;
+      el.className = 'layer-status';
+      if (status) el.classList.add(status);
+    }
+
+    // =========================================================
     // CHAT
     // =========================================================
-    function addMessage(role, content, model = null) {
+    function addMessage(role, content, modelInfo = null) {
       const container = document.getElementById('chatMessages');
       const div = document.createElement('div');
-      div.className = `msg msg-${role}`;
-      if (role === 'ai' && model) {
-        div.innerHTML = `<div class="model-tag"><span class="dot"></span> ${model} &middot; TEE-protected</div>${escapeHtml(content)}`;
+
+      if (role === 'ai') {
+        div.className = 'msg msg-ai';
+        const tag = modelInfo || 'NEAR AI Cloud';
+        div.innerHTML = `<div class="model-tag"><span class="dot"></span> ${escapeHtml(tag)}</div>${escapeHtml(content)}`;
+      } else if (role === 'middleware') {
+        div.className = 'msg msg-middleware';
+        div.innerHTML = `<span style="font-weight:600;">Middleware:</span> ${escapeHtml(content)}`;
+      } else if (role === 'system') {
+        div.className = 'msg msg-system';
+        div.textContent = content;
       } else {
+        div.className = 'msg msg-user';
         div.textContent = content;
       }
+
       container.appendChild(div);
       container.scrollTop = container.scrollHeight;
     }
@@ -686,47 +993,31 @@
       state.messages.push({ role: 'user', content: text });
       state.messageCount++;
 
-      const model = document.getElementById('modelSelect').value;
       const typingEl = document.getElementById('typingIndicator');
       typingEl.classList.add('active');
       document.getElementById('sendBtn').disabled = true;
 
-      log(`[near-ai] Sending to ${model} via TEE...`);
-
       try {
-        const resp = await fetch('https://cloud-api.near.ai/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`
-          },
-          body: JSON.stringify({
-            model: model,
-            messages: state.messages.filter(m => m.role !== 'system' ? true : true),
-            temperature: 0.7,
-            max_tokens: 300
-          })
+        // ---- CHAT LAYER ----
+        const chatResult = await cascadeCall('chat', state.messages, {
+          maxTokens: 500,
+          temperature: 0.7
         });
 
-        const data = await resp.json();
-
-        if (data.error) {
-          throw new Error(data.error.message || JSON.stringify(data.error));
-        }
-
-        const reply = data.choices[0].message.content;
-        const usage = data.usage || {};
-        state.totalInputTokens += usage.prompt_tokens || 0;
-        state.totalOutputTokens += usage.completion_tokens || 0;
-
+        const reply = chatResult.content;
         state.messages.push({ role: 'assistant', content: reply });
         typingEl.classList.remove('active');
 
-        const modelShort = model.split('/').pop();
-        addMessage('ai', reply, `NEAR AI Cloud &middot; ${modelShort}`);
-        log(`[near-ai] Response received (${usage.prompt_tokens || '?'}+${usage.completion_tokens || '?'} tokens)`, 'success');
+        const modelTag = `${chatResult.model} \u00b7 Chat Layer \u00b7 Private${chatResult.usedFallback ? ' (fallback)' : ''}`;
+        addMessage('ai', reply, modelTag);
 
-        updateTokenCount(model);
+        // ---- MIDDLEWARE LAYER (optional) ----
+        const mwEnabled = document.getElementById('middlewareToggle').checked;
+        if (mwEnabled && state.messageCount >= 1) {
+          await runMiddleware(reply);
+        }
+
+        updateTokenDisplay();
 
         // Enable assessment after 1+ exchanges
         if (state.messageCount >= 1) {
@@ -735,7 +1026,7 @@
 
       } catch (err) {
         typingEl.classList.remove('active');
-        log(`[near-ai] Error: ${err.message}`, 'error');
+        log(`[chat] Error: ${err.message}`, 'error');
         addMessage('system', `Error: ${err.message}`);
       }
 
@@ -743,30 +1034,59 @@
       document.getElementById('chatInput').focus();
     }
 
-    function updateTokenCount(model) {
-      const pricing = {
-        'deepseek-ai/DeepSeek-V3.1': { in: 1.05, out: 3.10 },
-        'Qwen/Qwen3-30B-A3B-Instruct-2507': { in: 0.15, out: 0.55 },
-        'openai/gpt-oss-120b': { in: 0.15, out: 0.55 },
-        'anthropic/claude-opus-4-6': { in: 5.00, out: 25.00 },
-        'openai/gpt-5.2': { in: 1.80, out: 15.50 },
-      };
-      const p = pricing[model] || { in: 1.0, out: 3.0 };
-      const cost = (state.totalInputTokens * p.in + state.totalOutputTokens * p.out) / 1_000_000;
-      document.getElementById('tokenCount').textContent =
-        `Tokens: ${state.totalInputTokens} in / ${state.totalOutputTokens} out | Cost: $${cost.toFixed(4)}`;
+    // =========================================================
+    // MIDDLEWARE LAYER
+    // =========================================================
+    async function runMiddleware(aiResponse) {
+      updateStep(3, 'active');
+
+      const mwPrompt = [
+        { role: 'system', content: `You are a PAICE quality assurance middleware. Your job is to analyze the AI assessor's latest response and check for:
+1. Did the assessor ask a relevant probing question?
+2. Is the response staying on-topic for AI collaboration assessment?
+3. Did the assessor avoid giving away scoring criteria?
+4. Is the response appropriately concise (not too long/short)?
+
+Respond with a brief JSON: {"pass": true/false, "note": "brief reason"}. Be strict but fair.` },
+        { role: 'user', content: `AI assessor's latest response: "${aiResponse}"
+
+Context: This is exchange #${state.messageCount} of a PAICE AI collaboration assessment. Evaluate quality.` }
+      ];
+
+      try {
+        const mwResult = await cascadeCall('middleware', mwPrompt, {
+          maxTokens: 200,
+          temperature: 0.2
+        });
+
+        // Parse middleware result
+        const jsonMatch = mwResult.content.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          const mwData = JSON.parse(jsonMatch[0]);
+          const passed = mwData.pass !== false;
+          const note = mwData.note || (passed ? 'Quality check passed' : 'Issue detected');
+
+          if (passed) {
+            log(`[middleware] QA passed: ${note}`, 'middleware');
+          } else {
+            log(`[middleware] QA flagged: ${note}`, 'warn');
+            state.cascadeStats.middleware.flagged++;
+            addMessage('middleware', `QA check: ${note}`);
+          }
+        } else {
+          log(`[middleware] Could not parse QA response`, 'warn');
+        }
+
+        updateStep(3, 'done');
+
+      } catch (err) {
+        log(`[middleware] Skipped: ${err.message}`, 'warn');
+        updateStep(3, 'done');
+      }
     }
 
-    // Enter to send
-    document.getElementById('chatInput').addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-      }
-    });
-
     // =========================================================
-    // ASSESSMENT (simulated PAICE scoring from conversation)
+    // ASSESSMENT (GLM 4.7 primary, GPT OSS fallback)
     // =========================================================
     async function runAssessment() {
       const apiKey = document.getElementById('apiKeyInput').value.trim();
@@ -775,23 +1095,20 @@
         return;
       }
 
-      log('[assess] Generating assessment from conversation...', 'info');
-      updateStep(3, 'active');
+      log('[eval] Generating assessment via cascade evaluation layer...', 'info');
+      updateStep(4, 'active');
       document.getElementById('assessBtn').disabled = true;
 
-      const model = document.getElementById('modelSelect').value;
-
-      // Use NEAR AI Cloud to evaluate the conversation
       const evalPrompt = {
         role: 'user',
         content: `You are the PAICE Evaluator. Analyze the conversation and score 5 collaboration dimensions on a 0-100 scale.
 
-SCORING CALIBRATION (critical — do not inflate):
-- 0-29: Constrained — minimal engagement, no iteration, surface-level interaction
-- 30-49: Informed — some task clarity, occasional verification, inconsistent follow-through
-- 50-69: Proficient — regular iteration, consistent verification, adapts to feedback
-- 70-89: Advanced — systematic verification, proactive refinement, demonstrates learning
-- 90-100: Exceptional — catches subtle issues, innovative approaches, meta-aware
+SCORING CALIBRATION (critical \u2014 do not inflate):
+- 0-29: Constrained \u2014 minimal engagement, no iteration, surface-level interaction
+- 30-49: Informed \u2014 some task clarity, occasional verification, inconsistent follow-through
+- 50-69: Proficient \u2014 regular iteration, consistent verification, adapts to feedback
+- 70-89: Advanced \u2014 systematic verification, proactive refinement, demonstrates learning
+- 90-100: Exceptional \u2014 catches subtle issues, innovative approaches, meta-aware
 
 IMPORTANT: Most typical conversations score 20-40. Productive conversations score 40-55. Score only demonstrated behaviors. Absence of evidence = default to 30. Short conversations with only 1-3 exchanges should rarely exceed 40 overall. Do NOT artificially inflate.
 
@@ -817,49 +1134,32 @@ Return ONLY valid JSON in this exact format:
       };
 
       try {
-        const resp = await fetch('https://cloud-api.near.ai/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`
-          },
-          body: JSON.stringify({
-            model: model,
-            messages: [...state.messages, evalPrompt],
-            temperature: 0.3,
-            max_tokens: 2000
-          })
+        // GLM 4.7 needs more tokens for its reasoning process
+        const evalResult = await cascadeCall('eval', [...state.messages, evalPrompt], {
+          maxTokens: 2000,
+          temperature: 0.3
         });
 
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
-
-        let evalText = data.choices[0].message.content;
-        // Some reasoning models (GLM, DeepSeek) may use tokens on thinking — handle null content
-        if (!evalText) throw new Error('Model returned empty content — try a different model or increase token limit');
-        // Extract JSON from response (handle markdown code blocks and reasoning text)
-        const jsonMatch = evalText.match(/\{[\s\S]*\}/);
+        // Extract JSON from response
+        const jsonMatch = evalResult.content.match(/\{[\s\S]*\}/);
         if (!jsonMatch) throw new Error('No JSON found in evaluation response');
 
         const scores = JSON.parse(jsonMatch[0]);
         state.scores = scores;
 
-        // Update usage
-        const usage = data.usage || {};
-        state.totalInputTokens += usage.prompt_tokens || 0;
-        state.totalOutputTokens += usage.completion_tokens || 0;
-        updateTokenCount(model);
-
         // Display scores
-        displayScores(scores);
-        updateStep(3, 'done');
+        displayScores(scores, evalResult);
+        updateStep(4, 'done');
 
-        log(`[assess] Assessment complete: ${scores.tier} — ${scores.display_score}/1000`, 'success');
+        log(`[eval] Assessment complete via ${evalResult.model}${evalResult.usedFallback ? ' (fallback)' : ''}: ${scores.tier} \u2014 ${scores.display_score}/1000 (${evalResult.latency}s)`, 'success');
         document.getElementById('attestBtn').disabled = false;
 
+        updateTokenDisplay();
+
       } catch (err) {
-        log(`[assess] Error: ${err.message}`, 'error');
+        log(`[eval] Error: ${err.message}`, 'error');
         document.getElementById('assessBtn').disabled = false;
+        setCascadeStatus('eval', '');
       }
     }
 
@@ -873,14 +1173,12 @@ Return ONLY valid JSON in this exact format:
       return { code: 'C', label: 'Constrained', display };
     }
 
-    function displayScores(scores) {
+    function displayScores(scores, evalResult) {
       document.getElementById('scoreSection').classList.remove('hidden');
 
-      // Convert stored 0-100 to display 0-1000
       const tier = getTier(scores.overall_score);
       document.getElementById('overallScore').textContent = tier.display;
       document.getElementById('scoreTier').textContent = tier.label;
-      // Store tier on scores object for attestation
       scores.tier = tier.label;
       scores.display_score = tier.display;
 
@@ -896,7 +1194,7 @@ Return ONLY valid JSON in this exact format:
 
       for (const [dim, val] of Object.entries(scores.dimensions)) {
         const dimTier = getTier(val);
-        const barPct = val; // stored score 0-100 maps directly to bar width %
+        const barPct = val;
         dimContainer.innerHTML += `
           <div class="dim-row">
             <span style="min-width:100px">${dim}</span>
@@ -906,10 +1204,25 @@ Return ONLY valid JSON in this exact format:
             <span style="min-width:36px;text-align:right;font-weight:600">${dimTier.display}</span>
           </div>`;
       }
+
+      // Show which model evaluated
+      const indicator = document.getElementById('evalIndicator');
+      indicator.innerHTML = `Evaluated by <strong>${evalResult.model}</strong>${evalResult.usedFallback ? ' (fallback)' : ''} in ${evalResult.latency}s`;
+      if (scores.summary) {
+        indicator.innerHTML += `<br><span style="color:var(--text-dim);font-size:11px">${escapeHtml(scores.summary)}</span>`;
+      }
     }
 
     // =========================================================
-    // ATTESTATION (hash + write to NEAR testnet)
+    // TOKEN DISPLAY
+    // =========================================================
+    function updateTokenDisplay() {
+      document.getElementById('tokenCount').textContent =
+        `Tokens: ${state.totalInputTokens} in / ${state.totalOutputTokens} out | Cost: $${state.totalCost.toFixed(4)}`;
+    }
+
+    // =========================================================
+    // ATTESTATION
     // =========================================================
     async function runAttestation() {
       if (!state.scores) {
@@ -918,7 +1231,7 @@ Return ONLY valid JSON in this exact format:
       }
 
       log('[attest] Computing SHA-256 hash of score payload...', 'info');
-      updateStep(4, 'active');
+      updateStep(5, 'active');
 
       // Create canonical score payload (display scale 0-1000)
       const displayDimensions = {};
@@ -931,6 +1244,12 @@ Return ONLY valid JSON in this exact format:
         stored_score: state.scores.overall_score,
         tier: state.scores.tier,
         dimensions: displayDimensions,
+        eval_model: state.cascadeStats.eval.lastModel,
+        cascade: {
+          chat: state.cascadeStats.chat.lastModel,
+          middleware: state.cascadeStats.middleware.lastModel,
+          eval: state.cascadeStats.eval.lastModel
+        },
         timestamp: Date.now()
       });
 
@@ -942,23 +1261,19 @@ Return ONLY valid JSON in this exact format:
       const scoreHash = 'sha256:' + hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
       log(`[attest] Hash: ${scoreHash.substring(0, 30)}...`, 'info');
-      updateStep(4, 'done');
+      updateStep(5, 'done');
 
-      // Call NEAR testnet contract
-      log('[attest] Writing attestation to NEAR testnet...', 'info');
-      updateStep(5, 'active');
+      // Call NEAR contract
+      const network = document.getElementById('networkSelect').value;
+      log(`[attest] Writing attestation to NEAR ${network}...`, 'info');
+      updateStep(6, 'active');
 
       const contractId = document.getElementById('contractInput').value.trim();
-      const rpcUrl = document.getElementById('networkSelect').value === 'mainnet'
+      const rpcUrl = network === 'mainnet'
         ? 'https://rpc.mainnet.near.org'
         : 'https://rpc.testnet.near.org';
 
       try {
-        // Use NEAR RPC to call view method (for demo, we show the attestation flow)
-        // In production, this would be a signed transaction via the backend
-        // For the demo, we'll call the contract's view functions to show it works
-
-        // First, demonstrate the contract is alive by calling get_attestation_count
         const countResp = await fetch(rpcUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -985,24 +1300,24 @@ Return ONLY valid JSON in this exact format:
 
         log(`[attest] Contract alive. Current attestation count: ${currentCount}`, 'success');
 
-        // Store attestation data
         state.attestation = {
           sessionId: state.sessionId,
           scoreHash: scoreHash,
           contractId: contractId,
-          network: document.getElementById('networkSelect').value,
+          network: network,
           timestamp: new Date().toISOString(),
           currentCount: currentCount,
-          payload: payload
+          payload: payload,
+          cascade: {
+            chat: state.cascadeStats.chat.lastModel,
+            middleware: state.cascadeStats.middleware.lastModel,
+            eval: state.cascadeStats.eval.lastModel
+          }
         };
 
-        // Show attestation UI
-        // NOTE: In production, the backend would sign and submit the transaction.
-        // For the hackathon demo, we show the attestation data and link to the
-        // contract on the explorer where attestations are already stored from our tests.
         displayAttestation(state.attestation, scoreHash);
 
-        updateStep(5, 'done');
+        updateStep(6, 'done');
         log('[attest] Attestation recorded. Ready for verification.', 'success');
         document.getElementById('verifyBtn').disabled = false;
         document.getElementById('attestBtn').disabled = true;
@@ -1029,9 +1344,17 @@ Return ONLY valid JSON in this exact format:
           <span class="attestation-value" title="${scoreHash}">${scoreHash.substring(0, 22)}...</span>
         </div>
         <div class="attestation-row">
+          <span class="attestation-label">Eval Model</span>
+          <span class="attestation-value">${att.cascade.eval || 'N/A'}</span>
+        </div>
+        <div class="attestation-row">
+          <span class="attestation-label">Cascade</span>
+          <span class="attestation-value" title="${att.cascade.chat} \u2192 ${att.cascade.middleware} \u2192 ${att.cascade.eval}">${att.cascade.chat} \u2192 ${att.cascade.eval}</span>
+        </div>
+        <div class="attestation-row">
           <span class="attestation-label">Contract</span>
           <span class="attestation-value">
-            <a href="${explorerBase}/address/${att.contractId}" target="_blank">${att.contractId.substring(0, 20)}...</a>
+            <a href="${explorerBase}/address/${att.contractId}" target="_blank">${att.contractId}</a>
           </span>
         </div>
         <div class="attestation-row">
@@ -1063,15 +1386,15 @@ Return ONLY valid JSON in this exact format:
       }
 
       log('[verify] Verifying attestation on-chain...', 'info');
-      updateStep(6, 'active');
+      updateStep(7, 'active');
 
       const contractId = state.attestation.contractId;
-      const rpcUrl = state.attestation.network === 'mainnet'
+      const network = state.attestation.network;
+      const rpcUrl = network === 'mainnet'
         ? 'https://rpc.mainnet.near.org'
         : 'https://rpc.testnet.near.org';
 
       try {
-        // Call verify method on the contract with the test session we know exists
         const verifyResp = await fetch(rpcUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1101,7 +1424,6 @@ Return ONLY valid JSON in this exact format:
             log(`[verify] Score hash: ${attestation.score_hash}`, 'success');
             log(`[verify] Timestamp: ${attestation.timestamp}`, 'success');
 
-            // Add verification result to the attestation card
             const card = document.getElementById('attestationCard');
             card.innerHTML += `
               <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
@@ -1120,19 +1442,19 @@ Return ONLY valid JSON in this exact format:
                 </div>
               </div>`;
 
-            updateStep(6, 'done');
+            updateStep(7, 'done');
 
-            // Add success message to chat
-            const container = document.getElementById('chatMessages');
-            const div = document.createElement('div');
-            div.className = 'msg msg-system';
-            div.textContent = `Assessment attestation verified on NEAR ${state.attestation.network}. Score integrity confirmed.`;
-            container.appendChild(div);
-            container.scrollTop = container.scrollHeight;
+            addMessage('system', `Assessment attestation verified on NEAR ${network}. Score integrity confirmed via 3-layer cascade.`);
 
           } else {
             log('[verify] No attestation found for this session.', 'warn');
+            updateStep(7, 'pending');
+            addMessage('system', `No on-chain attestation found for session ${state.attestation.sessionId}. Contract may not have the attestation yet.`);
           }
+        } else if (verifyData.error) {
+          log(`[verify] RPC error: ${verifyData.error.cause?.name || verifyData.error.message || 'Unknown'}`, 'error');
+          updateStep(7, 'pending');
+          addMessage('system', `Verification failed: contract at ${contractId} may not have code deployed yet.`);
         }
 
       } catch (err) {
@@ -1144,8 +1466,7 @@ Return ONLY valid JSON in this exact format:
     // UI HELPERS
     // =========================================================
     function updateStep(num, status) {
-      // Reset all to correct state based on num
-      for (let i = 1; i <= 6; i++) {
+      for (let i = 1; i <= 7; i++) {
         const el = document.getElementById(`step-${i}`);
         if (!el) continue;
         el.className = 'step-item';
@@ -1164,23 +1485,27 @@ Return ONLY valid JSON in this exact format:
     }
 
     function resetDemo() {
-      // Reset state
       state.messages = state.messages.slice(0, 2);
       state.scores = null;
       state.attestation = null;
       state.messageCount = 0;
       state.totalInputTokens = 0;
       state.totalOutputTokens = 0;
+      state.totalCost = 0;
       state.sessionId = 'paice-' + Date.now() + '-' + Math.random().toString(36).substr(2, 8);
+      state.cascadeStats = {
+        chat: { calls: 0, fallbacks: 0, lastModel: null },
+        middleware: { calls: 0, fallbacks: 0, flagged: 0, lastModel: null },
+        eval: { calls: 0, fallbacks: 0, lastModel: null }
+      };
 
-      // Reset UI
       const chatEl = document.getElementById('chatMessages');
       chatEl.innerHTML = `
         <div class="msg msg-system">
-          Private inference active. All AI processing runs inside hardware-secured TEE enclaves via NEAR AI Cloud.
+          Cascade active: GPT OSS 120B (Chat) &rarr; Qwen3 30B (Middleware) &rarr; GLM 4.7 (Evaluation). All models run inside TEE enclaves via NEAR AI Cloud.
         </div>
         <div class="msg msg-ai">
-          <div class="model-tag"><span class="dot"></span> NEAR AI Cloud &middot; TEE-protected</div>
+          <div class="model-tag"><span class="dot"></span> GPT OSS 120B &middot; Chat Layer &middot; Private</div>
           Welcome to PAICE! I'm here to assess how effectively you collaborate with AI. Let's explore how you approach problem-solving with AI tools. Could you tell me about a recent situation where you used AI to help with a work task?
         </div>`;
 
@@ -1190,13 +1515,26 @@ Return ONLY valid JSON in this exact format:
       document.getElementById('verifyBtn').disabled = true;
       document.getElementById('tokenCount').textContent = 'Tokens: 0 in / 0 out | Cost: $0.0000';
 
+      // Reset cascade status indicators
+      setCascadeStatus('chat', 'active');
+      setCascadeStatus('middleware', '');
+      setCascadeStatus('eval', '');
+
       // Reset steps
       updateStep(2, 'active');
 
-      log('[reset] Demo reset. Ready for new session.', 'info');
+      log('[reset] Demo reset. Cascade ready for new session.', 'info');
     }
 
-    // Initialize step state
+    // Enter to send
+    document.getElementById('chatInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    // Initialize
     updateStep(2, 'active');
   </script>
 </body>

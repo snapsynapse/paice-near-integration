@@ -1405,7 +1405,7 @@ Return ONLY valid JSON in this exact format:
               finality: 'final',
               account_id: contractId,
               method_name: 'verify',
-              args_base64: btoa(JSON.stringify({ session_id: 'test-session-001' }))
+              args_base64: btoa(JSON.stringify({ session_id: state.attestation.sessionId }))
             }
           })
         });
@@ -1442,7 +1442,7 @@ Return ONLY valid JSON in this exact format:
 
             updateStep(7, 'done');
 
-            addMessage('system', 'Assessment attestation verified on NEAR testnet. Score integrity confirmed via 3-layer cascade.');
+            addMessage('system', `Assessment attestation verified on NEAR ${state.attestation.network}. Score integrity confirmed via 3-layer cascade.`);
 
           } else {
             log('[verify] No attestation found for this session.', 'warn');
