@@ -6,7 +6,7 @@
 
 **Privacy-preserving AI collaboration assessment with verifiable private inference and on-chain attestation via NEAR.**
 
-PAICE is a production privacy-preserving AI assessment platform deployed at [paice.work](https://paice.work). This repository contains the NEAR Protocol integration layer, built for the [NEARCON Innovation Sandbox 2026](https://near-innovation-sandbox.devspot.app/).
+PAICE.work is a production privacy-preserving AI assessment platform deployed at [PAICE.work](https://paice.work). This repository contains the NEAR Protocol integration layer, built for the [NEARCON Innovation Sandbox 2026](https://near-innovation-sandbox.devspot.app/).
 
 ## What This Does
 
@@ -23,7 +23,7 @@ PAICE separates concerns across three dedicated model layers, each running insid
 |-------|--------------|----------|------|
 | **Chat** | GPT OSS 120B | DeepSeek V3.1 | Conducts the assessment conversation |
 | **Middleware** | Qwen3 30B | DeepSeek V3.1 | QA validation of AI responses |
-| **Evaluation** | GLM 4.7 | GPT OSS 120B | Scores the conversation (0-1000 PAICE scale) |
+| **Evaluation** | GLM 4.7 | GPT OSS 120B | Scores the conversation (0-1000 PAICE Score™ scale) |
 
 All four models are TEE-protected ("Private" classification on NEAR AI Cloud). If a primary model fails, the cascade automatically falls back to the secondary model.
 
@@ -124,13 +124,13 @@ paice-near-integration/
 | Explorer | [View on NearBlocks](https://nearblocks.io/address/paice.near) |
 | Methods | `attest()`, `verify()`, `get_attestation_count()` |
 
-The testnet contract is fully operational and used for the interactive demos. The mainnet account `paice.near` is registered and funded, with the same contract deployed for production use within the PAICE platform at [paice.work](https://paice.work).
+The testnet contract is fully operational and used for the interactive demos. The mainnet account `paice.near` is registered and funded, with the same contract deployed for production use within the PAICE platform at [PAICE.work](https://paice.work).
 
 ## NEAR AI Cloud Models Used
 
 ### TEE-Protected ("Private") Models
 
-These models run inside hardware-secured TEE enclaves. Conversation data is inaccessible to NEAR, the cloud provider, or PAICE during processing.
+These models run inside hardware-secured TEE enclaves. Conversation data is inaccessible to NEAR, the cloud provider, or PAICE.work during processing.
 
 | Model | Cascade Role | Cost (Input/Output per M tokens) | Latency |
 |-------|:---:|-------|-------|
@@ -198,7 +198,7 @@ Scores are stored on a 0-100 scale internally and displayed on a 0-1000 scale:
 
 ## Cost Per Assessment
 
-A standard 25-minute PAICE assessment involves 12-15 conversational turns with accumulating context, followed by a single evaluation pass over the full transcript. Typical cost: **$0.02–0.05** per assessment depending on conversation length and depth.
+A standard 25-minute PAICE assessment involves 10-15 conversational turns with accumulating context, followed by a single evaluation pass over the full transcript. Typical cost: **$0.02–0.05** per assessment depending on conversation length and depth.
 
 | Component | Tokens (in / out) | Cost |
 |-----------|:---:|:---:|
@@ -258,9 +258,9 @@ No other blockchain ecosystem provides all four capabilities needed for this int
 
 MIT
 
-## About PAICE
+## About PAICE.work PBC
 
-PAICE (Privacy-preserving AI Collaboration Effectiveness) is a production application that assesses how effectively people collaborate with AI. It uses adaptive conversational assessment with embedded behavioral tests across five dimensions: Performance, Accountability, Integrity, Collaboration, and Evolution.
+PAICE (People + AI Collaboration Effectiveness) is a production application that assesses how well humans collaborate with AI, and where risk patterns emerge. It uses adaptive conversational assessment with embedded behavioral tests across five dimensions: Performance, Accountability, Integrity, Collaboration, and Evolution.
 
 PAICE was designed privacy-first before this integration — which is why NEAR was a natural fit:
 
@@ -268,6 +268,6 @@ PAICE was designed privacy-first before this integration — which is why NEAR w
 - **No accounts, no PII**: Users are not identified. There is no login, no personal data in storage, and no way to trace a score back to an individual.
 - **PII as a scoring signal**: The middleware layer flags PII presence as input to the collaboration score — it doesn't store or forward it.
 
-The main application is deployed at [paice.work](https://paice.work). This repo contains only the NEAR Protocol integration layer.
+The main application is deployed at [PAICE.work](https://paice.work). This repo contains only the NEAR Protocol integration layer.
 
 Built by [Snap Synapse](https://snapsynapse.com) for NEARCON Innovation Sandbox 2026.
