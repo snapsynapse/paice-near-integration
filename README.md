@@ -258,6 +258,12 @@ MIT
 
 PAICE (Privacy-preserving AI Collaboration Effectiveness) is a production application that assesses how effectively people collaborate with AI. It uses adaptive conversational assessment with embedded behavioral tests across five dimensions: Performance, Accountability, Integrity, Collaboration, and Evolution.
 
+PAICE was designed privacy-first before this integration — which is why NEAR was a natural fit:
+
+- **Scores only, no transcripts**: The database stores evaluated scores and metadata. Conversation content is never persisted and expires from memory within 30 minutes.
+- **No accounts, no PII**: Users are not identified. There is no login, no personal data in storage, and no way to trace a score back to an individual.
+- **PII as a scoring signal**: The middleware layer flags PII presence as input to the collaboration score — it doesn't store or forward it.
+
 The main application is deployed at [paice.work](https://paice.work). This repo contains only the NEAR Protocol integration layer.
 
 Built by [Snap Synapse](https://snapsynapse.com) for NEARCON Innovation Sandbox 2026.
