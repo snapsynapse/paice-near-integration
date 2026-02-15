@@ -27,7 +27,7 @@ All four models are TEE-protected ("Private" classification on NEAR AI Cloud). I
 
 ### Try the Demos
 
-All demos are self-contained HTML files — open in a browser, enter a [NEAR AI Cloud API key](https://cloud.near.ai), and run the full pipeline.
+All demos are self-contained HTML files — open in a browser and run the full pipeline. The cascade demo (`demo/cascade.html`) comes pre-configured with a demo API key so you can try it immediately.
 
 | Demo | File | Network | Description |
 |------|------|---------|-------------|
