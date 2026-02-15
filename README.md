@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="imgs/paice-near-integration.png" alt="PAICE + NEAR Protocol Integration" width="600" />
+</p>
+
 # PAICE + NEAR Protocol Integration
 
 **Privacy-preserving AI collaboration assessment with verifiable private inference and on-chain attestation via NEAR.**
