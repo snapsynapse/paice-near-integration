@@ -622,6 +622,12 @@
   </div>
 
   <script>
+    // Use NEAR AI Cloud directly on localhost; proxy via PAICE backend on GitHub Pages
+    const isLocalhost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    const API_BASE = isLocalhost
+      ? 'https://cloud-api.near.ai/v1'
+      : 'https://paice-development-backend.onrender.com/api/v1/near/ai';
+
     // =========================================================
     // STATE
     // =========================================================
@@ -694,7 +700,7 @@
       log(`[near-ai] Sending to ${model} via TEE...`);
 
       try {
-        const resp = await fetch('https://cloud-api.near.ai/v1/chat/completions', {
+        const resp = await fetch(`${API_BASE}/chat/completions`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -817,7 +823,7 @@ Return ONLY valid JSON in this exact format:
       };
 
       try {
-        const resp = await fetch('https://cloud-api.near.ai/v1/chat/completions', {
+        const resp = await fetch(`${API_BASE}/chat/completions`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

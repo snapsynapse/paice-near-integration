@@ -783,7 +783,12 @@
       }
     };
 
-    const API_BASE = 'https://cloud-api.near.ai/v1';
+    // Use NEAR AI Cloud directly on localhost; proxy via PAICE backend on GitHub Pages
+    // (NEAR AI Cloud doesn't set CORS headers for non-localhost origins)
+    const isLocalhost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    const API_BASE = isLocalhost
+      ? 'https://cloud-api.near.ai/v1'
+      : 'https://paice-development-backend.onrender.com/api/v1/near/ai';
 
     // Default demo key (pre-loaded for judges — replace with your own if preferred)
     const DEFAULT_KEY = ['sk-162ca0be','5d024933','a6a30ad9','4a0006ab'].join('');
