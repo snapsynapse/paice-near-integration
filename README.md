@@ -6,7 +6,7 @@
 
 **Privacy-preserving AI collaboration assessment with verifiable private inference and on-chain attestation via NEAR.**
 
-PAICE.work is a production privacy-preserving AI assessment platform deployed at [PAICE.work](https://paice.work). This repository contains the NEAR Protocol integration layer, built for the [NEARCON Innovation Sandbox 2026](https://near-innovation-sandbox.devspot.app/).
+PAICE.work is a production privacy-preserving AI assessment platform deployed at [PAICE.work](https://paice.work). This repository contains the NEAR Protocol integration layer, built for the [NEARCON Innovation Sandbox 2026](https://near-innovation-sandbox.devspot.app/). But this isn't just a testnet proof-of-concept, this is [running on mainnet](https://nearblocks.io/txns/3dG2Qr8KRgLedeZctz8TPe2KwRinWXPCzLkvX37yoRFY) and our development instance today, and should be running in production by [NEARCON](https://nearcon.org/).
 
 ## What This Does
 
