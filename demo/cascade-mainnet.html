@@ -74,6 +74,11 @@
       color: var(--near-green);
       border: 1px solid rgba(0, 236, 151, 0.3);
     }
+    .badge-testnet {
+      background: rgba(255, 159, 67, 0.15);
+      color: var(--orange);
+      border: 1px solid rgba(255, 159, 67, 0.3);
+    }
     .badge-cascade {
       background: rgba(167, 139, 250, 0.15);
       color: var(--purple);
@@ -571,7 +576,7 @@
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         NEAR Verified
       </span>
-      <span class="badge badge-mainnet">mainnet</span>
+      <span class="badge badge-testnet">testnet</span>
     </div>
     <div class="header-badges">
       <span style="font-size:12px;color:var(--text-dim);">NEARCON Innovation Sandbox 2026</span>
@@ -730,13 +735,13 @@
         </div>
         <div class="config-row">
           <label>Contract Address</label>
-          <input type="text" id="contractInput" value="paice.near" />
+          <input type="text" id="contractInput" value="e756da-67e557-1771270439.nearplay.testnet" />
         </div>
         <div class="config-row">
           <label>Network</label>
           <select id="networkSelect">
-            <option value="testnet">Testnet</option>
-            <option value="mainnet" selected>Mainnet</option>
+            <option value="testnet" selected>Testnet</option>
+            <option value="mainnet">Mainnet</option>
           </select>
         </div>
       </div>
@@ -752,7 +757,7 @@
           <div class="log-success">[cascade] Chat: GPT OSS 120B (Private)</div>
           <div class="log-middleware">[cascade] Middleware: Qwen3 30B (Private)</div>
           <div class="log-warn">[cascade] Evaluation: GLM 4.7 (Private)</div>
-          <div class="log-info">[config] Contract: paice.near (mainnet)</div>
+          <div class="log-info">[config] Contract: e756da-67e557-1771270439.nearplay.testnet (testnet)</div>
         </div>
       </div>
     </div>
