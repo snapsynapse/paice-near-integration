@@ -85,10 +85,9 @@ print(f"Attester: {result.attester}")
 
 ```
 paice-near-integration/
-  contracts/
-    assessment-attestation/      # Rust smart contract (NEAR SDK)
-      Cargo.toml
-      src/lib.rs
+  src/
+    lib.rs                       # Rust smart contract (NEAR SDK 5.6.0)
+  Cargo.toml                     # Smart contract package config
   integration/
     near_service.py              # Python service (inference + attestation + cascade)
     near_config.py               # Configuration management
