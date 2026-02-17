@@ -1,5 +1,26 @@
 # Changelog
 
+## v1.1.0 — 2026-02-16 (Real On-Chain Attestation)
+
+### On-Chain Transaction Signing
+- **near-api-js integration**: All three demo files now sign real `attest()` transactions client-side via `near-api-js` v4.0.4
+- **Full 7-step pipeline**: "Attest on NEAR" writes a signed transaction; "Verify" reads it back from chain — all 7 steps complete with green checkmarks
+- **Transaction hash display**: Attestation card shows clickable tx hash linking to NearBlocks explorer
+- **Graceful fallback**: If signing fails, demo continues with read-only attestation display
+
+### New Testnet Account
+- **`paice-demo.testnet`**: Dedicated demo account with locally-managed ed25519 keypair, deployed via NEAR CLI
+- **Contract**: Same Rust WASM as v1.0.0, verified working with `attest()`, `verify()`, `get_attestation_count()`
+- **Replaces**: `e756da-291226-1771097746.nearplay.testnet` (nearplay.app Playground — no key export)
+
+### GitHub Pages
+- **Live demo**: [https://snapsynapse.github.io/paice-near-integration/](https://snapsynapse.github.io/paice-near-integration/)
+- API key pre-loaded, testnet contract configured — judges can try immediately
+
+### Supporting File Updates
+- Updated contract address in `.env.example`, `README.md`, `docs/architecture.md`, `near_config.py`, `test_attestation.py`
+- README: added live demo URL, near-api-js signing context, updated testnet contract table
+
 ## v1.0.0 — 2026-02-15 (NEARCON Innovation Sandbox Submission)
 
 ### Day 1 — Saturday Feb 14

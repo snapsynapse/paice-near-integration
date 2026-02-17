@@ -5,7 +5,7 @@ Test assessment attestation verification on NEAR testnet.
 Verifies that the attestation contract is deployed and responsive.
 
 Usage:
-    export NEAR_CONTRACT_ID=your-contract.nearplay.testnet
+    export NEAR_CONTRACT_ID=paice-demo.testnet
     python test_attestation.py
 """
 
@@ -21,7 +21,7 @@ from near_service import AttestationService
 def main():
     contract_id = os.getenv(
         "NEAR_CONTRACT_ID",
-        "e756da-291226-1771097746.nearplay.testnet"  # Demo contract
+        "paice-demo.testnet"  # Demo contract
     )
     network = os.getenv("NEAR_NETWORK", "testnet")
 

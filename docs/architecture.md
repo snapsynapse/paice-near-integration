@@ -255,16 +255,17 @@ Scoring prompts include calibration anchors from PAICE production:
 ## Deployed Contracts
 
 ### Testnet (Hackathon Demo)
-- **Address:** `e756da-291226-1771097746.nearplay.testnet`
+- **Address:** `paice-demo.testnet`
 - **Network:** NEAR Testnet
-- **Explorer:** https://testnet.nearblocks.io/address/e756da-291226-1771097746.nearplay.testnet
-- **Deployed via:** [nearplay.app](https://nearplay.app)
+- **Explorer:** https://testnet.nearblocks.io/address/paice-demo.testnet
+- **Deployed via:** NEAR CLI (`near-cli-rs`)
 
 ### Mainnet (Production)
 - **Address:** `paice.near`
 - **Network:** NEAR Mainnet
 - **Explorer:** https://nearblocks.io/address/paice.near
 
-The testnet contract is fully operational and used by `demo/cascade.html` and `demo/index.html`.
-The mainnet account `paice.near` is registered and funded, with the same contract deployed for
-production use. `demo/cascade-mainnet.html` is pre-configured for mainnet.
+The testnet contract is fully operational and used by all three demos. Attestations are signed
+client-side via `near-api-js` (v4.0.4) with an embedded testnet keypair — testnet NEAR has zero
+monetary value, so key exposure is safe. The mainnet account `paice.near` is registered and funded,
+with the same contract deployed for production use.

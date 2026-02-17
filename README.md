@@ -46,7 +46,7 @@ All demos are self-contained HTML files — open in a browser and run the full p
 3. Middleware QA validation (Qwen3 30B)
 4. Generate assessment scores (GLM 4.7)
 5. Hash score payload (SHA-256)
-6. Write attestation to NEAR smart contract
+6. Sign and write attestation to NEAR smart contract (via `near-api-js`)
 7. Verify the attestation on-chain
 
 ### Test the API
@@ -67,7 +67,7 @@ from integration.near_service import AttestationService
 
 # Testnet (demo)
 service = AttestationService(
-    contract_id="e756da-291226-1771097746.nearplay.testnet",
+    contract_id="paice-demo.testnet",
     network="testnet"
 )
 
@@ -108,11 +108,11 @@ paice-near-integration/
 
 | Field | Value |
 |-------|-------|
-| Address | `e756da-291226-1771097746.nearplay.testnet` |
+| Address | `paice-demo.testnet` |
 | Network | NEAR Testnet |
-| Explorer | [View on NearBlocks](https://testnet.nearblocks.io/address/e756da-291226-1771097746.nearplay.testnet) |
+| Explorer | [View on NearBlocks](https://testnet.nearblocks.io/address/paice-demo.testnet) |
 | Methods | `attest()`, `verify()`, `get_attestation_count()` |
-| Deployed via | [nearplay.app](https://nearplay.app) |
+| Deployed via | NEAR CLI (`near-cli-rs`) |
 
 ### Mainnet (Production)
 
@@ -123,7 +123,9 @@ paice-near-integration/
 | Explorer | [View on NearBlocks](https://nearblocks.io/address/paice.near) |
 | Methods | `attest()`, `verify()`, `get_attestation_count()` |
 
-The testnet contract is fully operational and used for the interactive demos. The mainnet account `paice.near` is registered and funded, with the same contract deployed for production use within the PAICE platform at [PAICE.work](https://paice.work).
+The testnet contract is fully operational and used for the interactive demos. Attestation transactions are signed client-side via `near-api-js` (v4.0.4) with an embedded testnet keypair — testnet NEAR has zero monetary value, so key exposure is safe. The mainnet account `paice.near` is registered and funded, with the same contract deployed for production use within the PAICE platform at [PAICE.work](https://paice.work).
+
+**Live demo:** [https://snapsynapse.github.io/paice-near-integration/](https://snapsynapse.github.io/paice-near-integration/) — hosted on GitHub Pages, API key pre-loaded, no setup required.
 
 ## NEAR AI Cloud Models Used
 
@@ -195,6 +197,8 @@ Scores are stored on a 0-100 scale internally and displayed on a 0-1000 scale:
 
 **Calibration**: Most typical conversations score 200-400. Productive conversations score 400-550. Only sustained, high-quality exchanges with clear evidence of verification, iteration, and learning reach 600+.
 
+> **Note:** The interactive demos are development sandboxes — scores generated from short demo conversations are not calibrated PAICE Scores&trade;. Production assessments at [paice.work](https://paice.work) use a 25-minute adaptive conversation with embedded behavioral probes. Demo scores will be low by design; this is expected and demonstrates the scoring pipeline is functional end-to-end.
+
 ## Cost Per Assessment
 
 A standard 25-minute PAICE assessment involves 10-15 conversational turns with accumulating context, followed by a single evaluation pass over the full transcript. Typical cost: **$0.02–0.05** per assessment depending on conversation length and depth.
@@ -235,7 +239,7 @@ NEAR_CASCADE_EVAL_FALLBACK=openai/gpt-oss-120b
 
 # Assessment Attestation Contract
 # Testnet (demo):
-NEAR_CONTRACT_ID=e756da-291226-1771097746.nearplay.testnet
+NEAR_CONTRACT_ID=paice-demo.testnet
 NEAR_NETWORK=testnet
 # Mainnet (production):
 # NEAR_CONTRACT_ID=paice.near

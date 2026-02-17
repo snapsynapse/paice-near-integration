@@ -137,9 +137,9 @@ NEAR_CASCADE_EVAL_FALLBACK=openai/gpt-oss-120b
 NEAR_CASCADE_EVAL_MAX_TOKENS=2000
 
 # Contract (testnet for demo, mainnet for production)
-# Testnet: NEAR_CONTRACT_ID=e756da-291226-1771097746.nearplay.testnet
+# Testnet: NEAR_CONTRACT_ID=paice-demo.testnet
 # Mainnet: NEAR_CONTRACT_ID=paice.near
-NEAR_CONTRACT_ID=e756da-291226-1771097746.nearplay.testnet
+NEAR_CONTRACT_ID=paice-demo.testnet
 NEAR_NETWORK=testnet
 NEAR_PREFER_TEE=true
 """
