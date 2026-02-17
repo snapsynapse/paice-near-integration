@@ -197,7 +197,7 @@ Scores are stored on a 0-100 scale internally and displayed on a 0-1000 scale:
 
 **Calibration**: Most typical conversations score 200-400. Productive conversations score 400-550. Only sustained, high-quality exchanges with clear evidence of verification, iteration, and learning reach 600+.
 
-> **Note:** The interactive demos are development sandboxes — scores generated from short demo conversations are not calibrated PAICE Scores&trade;. Production assessments at [paice.work](https://paice.work) use a 25-minute adaptive conversation with embedded behavioral probes. Demo scores will be center around the 300s by design; this is expected and demonstrates the scoring pipeline is functional end-to-end.
+> **Note:** The interactive demos are development sandboxes — scores generated from short demo conversations are not calibrated PAICE Scores&trade;. Production assessments at [PAICE.work](https://paice.work) use a 25-minute adaptive conversation with embedded behavioral probes. Demo scores will center around the 300s by design; this is expected and demonstrates the scoring pipeline is functional end-to-end.
 
 ## Cost Per Assessment
 
