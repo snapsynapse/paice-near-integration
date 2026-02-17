@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="../imgs/PAICE-NEAR.png">
+  <script src="https://cdn.jsdelivr.net/npm/near-api-js@4.0.4/dist/near-api-js.min.js"></script>
   <title>PAICE + NEAR Cascade Demo</title>
   <style>
     :root {
@@ -731,7 +732,7 @@
         </div>
         <div class="config-row">
           <label>Contract Address</label>
-          <input type="text" id="contractInput" value="e756da-291226-1771097746.nearplay.testnet" />
+          <input type="text" id="contractInput" value="paice-demo.testnet" />
         </div>
         <div class="config-row">
           <label>Network</label>
@@ -753,7 +754,7 @@
           <div class="log-success">[cascade] Chat: GPT OSS 120B (Private)</div>
           <div class="log-middleware">[cascade] Middleware: Qwen3 30B (Private)</div>
           <div class="log-warn">[cascade] Evaluation: GLM 4.7 (Private)</div>
-          <div class="log-info">[config] Contract: e756da-291226-1771097746.nearplay.testnet</div>
+          <div class="log-info">[config] Contract: paice-demo.testnet</div>
         </div>
       </div>
     </div>
@@ -790,6 +791,14 @@
     const API_BASE = isLocalhost
       ? 'https://cloud-api.near.ai/v1'
       : 'https://paice-development-backend.onrender.com/api/v1/near/ai';
+
+    // NEAR testnet signing config (testnet keys only — zero monetary value)
+    const NEAR_SIGNER = {
+      accountId: 'paice-demo.testnet',
+      privateKey: 'ed25519:2Um9V538eSk1L1xnwVFCz1prqh7Gw436HpfC6jgg1Sqo8cXSGCjF9ESPpsodAe6DnozJbJaD2876MBVVcoaBPy7d',
+      networkId: 'testnet',
+      nodeUrl: 'https://rpc.testnet.near.org'
+    };
 
     // Default demo key (pre-loaded for judges — replace with your own if preferred)
     const DEFAULT_KEY = ['sk-162ca0be','5d024933','a6a30ad9','4a0006ab'].join('');
@@ -1238,6 +1247,39 @@ Return ONLY valid JSON in this exact format:
     }
 
     // =========================================================
+    // NEAR TRANSACTION SIGNING (testnet only)
+    // =========================================================
+    async function signAttestation(contractId, sessionId, scoreHash) {
+      const nearApi = window.nearApi || window.nearAPI;
+      if (!nearApi) throw new Error('near-api-js not loaded');
+
+      const { keyStores, KeyPair, connect } = nearApi;
+
+      const keyStore = new keyStores.InMemoryKeyStore();
+      const keyPair = KeyPair.fromString(NEAR_SIGNER.privateKey);
+      await keyStore.setKey(NEAR_SIGNER.networkId, NEAR_SIGNER.accountId, keyPair);
+
+      const near = await connect({
+        networkId: NEAR_SIGNER.networkId,
+        keyStore: keyStore,
+        nodeUrl: NEAR_SIGNER.nodeUrl,
+      });
+
+      const account = await near.account(NEAR_SIGNER.accountId);
+
+      // Use account.functionCall for state-changing methods
+      const result = await account.functionCall({
+        contractId: contractId,
+        methodName: 'attest',
+        args: { session_id: sessionId, score_hash: scoreHash },
+        gas: '30000000000000', // 30 Tgas
+        attachedDeposit: '0',
+      });
+
+      return result;
+    }
+
+    // =========================================================
     // ATTESTATION
     // =========================================================
     async function runAttestation() {
@@ -1315,6 +1357,22 @@ Return ONLY valid JSON in this exact format:
 
         log(`[attest] Contract alive. Current attestation count: ${currentCount}`, 'success');
 
+        // Write real attestation transaction to testnet via near-api-js
+        let txHash = null;
+        try {
+          log('[attest] Signing transaction via near-api-js...', 'info');
+          const txResult = await signAttestation(contractId, state.sessionId, scoreHash);
+          txHash = txResult?.transaction?.hash || txResult?.transaction_outcome?.id || null;
+          if (txHash) {
+            log(`[attest] Transaction submitted! Hash: ${txHash}`, 'success');
+          } else {
+            log('[attest] Transaction submitted (hash pending confirmation)', 'success');
+          }
+        } catch (txErr) {
+          log(`[attest] Transaction signing failed: ${txErr.message}`, 'warn');
+          log('[attest] Continuing with read-only attestation display...', 'info');
+        }
+
         state.attestation = {
           sessionId: state.sessionId,
           scoreHash: scoreHash,
@@ -1322,6 +1380,7 @@ Return ONLY valid JSON in this exact format:
           network: document.getElementById('networkSelect').value,
           timestamp: new Date().toISOString(),
           currentCount: currentCount,
+          txHash: txHash,
           payload: payload,
           cascade: {
             chat: state.cascadeStats.chat.lastModel,
@@ -1376,9 +1435,15 @@ Return ONLY valid JSON in this exact format:
           <span class="attestation-label">Network</span>
           <span class="attestation-value">${network}</span>
         </div>
+        ${att.txHash ? `<div class="attestation-row">
+          <span class="attestation-label">Transaction</span>
+          <span class="attestation-value">
+            <a href="${explorerBase}/txns/${att.txHash}" target="_blank">${att.txHash.substring(0, 16)}...</a>
+          </span>
+        </div>` : ''}
         <div class="attestation-row">
           <span class="attestation-label">Attestations</span>
-          <span class="attestation-value">${att.currentCount} on-chain</span>
+          <span class="attestation-value">${att.currentCount + (att.txHash ? 1 : 0)} on-chain</span>
         </div>
         <div class="attestation-row">
           <span class="attestation-label">Timestamp</span>
