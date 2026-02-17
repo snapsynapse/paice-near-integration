@@ -35,7 +35,7 @@ All demos are self-contained HTML files — open in a browser and run the full p
 
 | Demo | File | Network | Description |
 |------|------|---------|-------------|
-| **Cascade (testnet)** | `demo/cascade.html` | Testnet | Three-layer cascade with live testnet attestation. **Start here.** |
+| **Cascade (testnet)** | `demo/cascade.html` | Testnet | Three-layer cascade with live testnet attestation. **[Start here.](https://snapsynapse.github.io/paice-near-integration/demo/cascade.html)** |
 | **Cascade (mainnet)** | `demo/cascade-mainnet.html` | Mainnet | Same cascade, configured for `paice.near` mainnet contract. |
 | **Single-model** | `demo/index.html` | Testnet | Simplified single-model version for reference. |
 
@@ -197,7 +197,7 @@ Scores are stored on a 0-100 scale internally and displayed on a 0-1000 scale:
 
 **Calibration**: Most typical conversations score 200-400. Productive conversations score 400-550. Only sustained, high-quality exchanges with clear evidence of verification, iteration, and learning reach 600+.
 
-> **Note:** The interactive demos are development sandboxes — scores generated from short demo conversations are not calibrated PAICE Scores&trade;. Production assessments at [paice.work](https://paice.work) use a 25-minute adaptive conversation with embedded behavioral probes. Demo scores will be low by design; this is expected and demonstrates the scoring pipeline is functional end-to-end.
+> **Note:** The interactive demos are development sandboxes — scores generated from short demo conversations are not calibrated PAICE Scores&trade;. Production assessments at [paice.work](https://paice.work) use a 25-minute adaptive conversation with embedded behavioral probes. Demo scores will be center around the 300s by design; this is expected and demonstrates the scoring pipeline is functional end-to-end.
 
 ## Cost Per Assessment
 
